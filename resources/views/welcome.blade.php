@@ -2,6 +2,9 @@
 
 @section('content')
     @if(Auth::check())
+        {{--今ログインした人の名前を表示しているけど、
+        後で、ユーザ詳細ページへのリンクに変更する
+        --}}
         {{ Auth::user()->name }}
     @else
         <div class="row">
