@@ -36,4 +36,20 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    
+    /**
+     * このユーザが所有する投稿。（Logモデルとの関係を定義）
+     */
+    public function logs()
+    {
+        return $this->hasMany(Log::class);
+    }
+    
+    /**
+     * このユーザに関するモデルの件数をロードする
+     */
+    public function loadRelationshipCounts()
+    {
+        $this->loadCount('logs');
+    }
 }

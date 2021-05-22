@@ -12,9 +12,7 @@
 */
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'LogsController@index');
     
 //ユーザ登録
 Route::get('signup', 'Auth\RegisterController@showRegistrationForm')->name('signup.get');
@@ -27,8 +25,7 @@ Route::get('logout','Auth\LoginController@logout')->name('logout.get');
 
 
 //認証付きルーティング
-Route::group(['middleware'=>['auth']],fungtion(){
+Route::group(['middleware'=>['auth']],function(){
     Route::resource('users', 'UsersController',['only' =>['index','show']]);
+    Route::resource('logs', 'LogsController', ['only' => ['store','destroy']]);
 });
-    
-

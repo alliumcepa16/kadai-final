@@ -20,6 +20,8 @@
                 {{--お気に入りタブ--}}
                 <li class="nav-item"><a href="#" class="nav-link">Favorites</li>
             </ul>
+            {{--投稿一覧--}}
+            @include('logs.logs')
         </div>
     </div>
 @endsection

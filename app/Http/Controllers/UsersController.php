@@ -24,9 +24,16 @@ class UsersController extends Controller
         //idの値でユーザを検索して取得
         $user = User::findOrFail($id);
         
+        //関係するモデルの件数をロード
+        $user->loadRelationshipCounts();
+        
+        //ユーザの投稿一覧を登山日(date)の降順で取得
+        $logs = $user->logs()->orderBy('date','desc')->paginate(5);
+        
         //ユーザ詳細ビューでそれを表示
         return view('users.show',[
             'user' => $user,
+            'logs' => $logs,
         ]);
     }
 }
