@@ -7,20 +7,20 @@
                 <div class="media-body">
                     <div>
                         {{--投稿詳細ページへのリンク--}}
-                        {!! link_to_route('logs.show', $log->log->title,['log'=>$log->id]) !!}
+                        <p>{!! link_to_route('logs.show', $log->title, ['log'=>$log->id]) !!}</p>
                         <span class="text-muted">{{$log->date}}</span>
-                    </div>
+                    </div>                    
                     <div>
                         {{--投稿内容--}}
                         <p class="mb-0">{!! nl2br(e($log->content)) !!}</p>
                     </div>
-                </div>
                     @if(Auth::id()==$log->user_id)
                         {{--投稿削除ボタンのフォーム--}}
                         {!! Form::open(['route' => ['logs.destroy', $log->id], 'method' => 'delete']) !!}
-                            {!! Form::submit('delete',['class'=>'btn btn-danger btn-sm']) !!}
+                            {!! Form::button('<i class="fas fa-trash"></i>',['class'=>'btn btn-secondary btn-sm', 'type'=>'submit']) !!}
                         {!! Form::close() !!}
                     @endif
+                </div>
             </li>
         @endforeach
     </ul>

@@ -12,6 +12,10 @@
                         {{--認証済みユーザの写真を後で表示する--}}
                         <img src="#" alt="">
                     </div>
+                    <div>
+                        {{--投稿フォームへのリンク--}}
+                        {!! link_to_route('logs.create','Log page',[],['class' => ' btn btn-primary']) !!}
+                    </div>
                 </div>
             </aside>
             <div class="col-sm-8">
