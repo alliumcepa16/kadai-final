@@ -11,6 +11,10 @@
                     {{--ユーザのあらかじめ登録した写真を表示する予定--}}
                     <img src="#" alt="">
                 </div>
+                <div class="text-center">
+                {{--投稿フォームへのリンク--}}
+                    {!! link_to_route('logs.create','Log page',[],['class' => ' btn btn-primary']) !!}
+                </div>
             </div>
         </aside>
         <div class="col-sm-8">

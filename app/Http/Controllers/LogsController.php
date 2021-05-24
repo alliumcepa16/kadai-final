@@ -30,8 +30,10 @@ class LogsController extends Controller
     {
         //バリデーション
         $request->validate([
+            'date' =>'required',
             'title' =>'required|max:255',
             'content'=>'required|max:255',
+            'image' =>'required|image',
         ]);
         
         //認証済みユーザの投稿として作成(リクエストされた値をもとに作成)
@@ -43,7 +45,7 @@ class LogsController extends Controller
         ]);
         
         //前のURLへリダイレクトさせる
-        return back();
+        return view('logs.confirm');
     }
     
     public function destroy($id)
@@ -70,12 +72,10 @@ class LogsController extends Controller
             return view('logs.show',[
                 'log' => $log,
             ]);
-            
-            dd($log);
         }
         
         //トップページへリダイレクトさせる
-        return view(welcome);
+        return redirect('/');
     }
     
     public function create()
@@ -88,6 +88,60 @@ class LogsController extends Controller
             ]);
         }
         //前のURLへリダイレクトさせる
+        return redirect('logs.confirm');
+    }
+    
+    public function confirm(Request $request)
+    {
+        $date = $request->date;
+        $title = $request->title;
+        $content = $request->content;
+        
+        //拡張子付きでファイル名を取得
+        $imageName = $request->file('image')->getClientOriginalName();
+        
+        //拡張子のみ
+        $extension = $request->file('image')->getClientOriginalExtension();
+        
+        //新しいファイル名を生成(形式：元のファイル名_ランダムの英数字.拡張子）
+        $newImageName = pathinfo($imageName,PATHINFO_FILENAME) . "_" . uniqid() . "$extension";
+    
+        //tmpフォルダに移動
+        $request->file('image')->move(public_path() . "/img/tmp", $newImageName);
+        $image = "/img/tmp/" . $newImageName;
+        
+        return view('logs.confirm',[
+            'date' => $date,
+            'title' => $title,
+            'content' => $content,
+            'newImageName' => $newImageName,
+        ]);
+    }
+    
+    public function complete(Request $request)
+    {
+        $log = new Log;
+        $log()->create([
+            'date' => $request->date,
+            'title' => $request->title,
+            'content' => $request->content,
+            'image' => $request->image,
+        ]);
+        
+        //レコードを挿入したときのIDを取得
+        $lastInsertedId = $log->id;
+        
+        //ディレクトリを作成
+        if(!file_exitst(public_path() . "/img/" . $lastInsertedId)){
+            mkdir(public_path(). "img/" . $lastInsertedId ,0777);
+        }
+        
+        //一時保存から本番の格納場所へ移動
+        rename(public_path(). "/img/tmp/" . $request->image, public_path() . "/img/" . $lastInsertedId . "/" . $request->image);
+        
+        //一時保存の画像を削除
+        \File::cleanDirectory(public_path()."/img/tmp");
+        
         return redirect('/');
     }
 }

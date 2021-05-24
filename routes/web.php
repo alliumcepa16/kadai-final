@@ -26,6 +26,15 @@ Route::get('logout','Auth\LoginController@logout')->name('logout.get');
 
 //認証付きルーティング
 Route::group(['middleware'=>['auth']],function(){
+    Route::group(['prefix'=>'users/{id}'],function(){
+    });
+    
     Route::resource('users', 'UsersController',['only' =>['index','show']]);
+    
+    Route::group(['prefix' => 'logs/{id}'], function(){
+    });
     Route::resource('logs', 'LogsController', ['only' => ['show','store','destroy','create']]);
+
+    Route::post('/confirm','LogsController@confirm')->name('confirm');
+    Route::post('/complete','LogsController@complete')->name('complete');
 });
