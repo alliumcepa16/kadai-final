@@ -103,7 +103,8 @@ class LogsController extends Controller
             'content'=>'required|max:255',
             'image' =>'required|image',
         ]);
-        
+
+/*        
         //認証済みユーザの投稿として作成(リクエストされた値をもとに作成)
         $request->user()->logs()->create([
             'date' => $request->date,
@@ -111,7 +112,7 @@ class LogsController extends Controller
             'content' => $request->content,
             'image' => $request->image,
         ]);
-        
+*/        
         $date = $request->date;
         $title = $request->title;
         $content = $request->content;
@@ -142,6 +143,7 @@ class LogsController extends Controller
     public function complete(Request $request)
     {
         $log = new Log();
+        $log ->user_id = \Auth::user()->id;
         $log ->date = $request->date;
         $log ->title = $request->title;
         $log->content = $request->content;
@@ -152,9 +154,10 @@ class LogsController extends Controller
         $lastInsertedId = $log->id;
         
         //ディレクトリを作成
-        if(!file_exists(public_path() . "/img/" . $lastInsertedId)){
-            mkdir(public_path(). "img/" . $lastInsertedId ,0777);
+        if (!file_exists(public_path() . "/img/" . $lastInsertedId)) {
+            mkdir(public_path() . "/img/" . $lastInsertedId, 0777);
         }
+        
         
         //一時保存から本番の格納場所へ移動
         rename(public_path(). "/img/tmp/" . $request->image, public_path() . "/img/" . $lastInsertedId . "/" . $request->image);
