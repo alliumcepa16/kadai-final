@@ -33,8 +33,9 @@ Route::group(['middleware'=>['auth']],function(){
     
     Route::group(['prefix' => 'logs/{id}'], function(){
     });
+    
     Route::resource('logs', 'LogsController', ['only' => ['show','store','destroy','create']]);
 
-    Route::post('/confirm','LogsController@confirm')->name('confirm');
-    Route::post('/complete','LogsController@complete')->name('complete');
+    Route::post('confirm','LogsController@confirm')->name('confirm');
+    Route::post('complete','LogsController@complete')->name('complete');
 });

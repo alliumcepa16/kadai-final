@@ -25,7 +25,8 @@ class LogsController extends Controller
         //welcomeビューでそれらを表示
         return view('welcome', $data);
     }
-    
+
+/*//storeを修正するようバックアップ    
     public function store(Request $request)
     {
         //バリデーション
@@ -45,8 +46,10 @@ class LogsController extends Controller
         ]);
         
         //前のURLへリダイレクトさせる
-        return view('logs.confirm');
+        return back();
     }
+*///
+
     
     public function destroy($id)
     {
@@ -88,11 +91,27 @@ class LogsController extends Controller
             ]);
         }
         //前のURLへリダイレクトさせる
-        return redirect('logs.confirm');
+        return back();
     }
     
-    public function confirm(Request $request)
+    public function store(Request $request)
     {
+        //バリデーション
+        $request->validate([
+            'date' =>'required',
+            'title' =>'required|max:255',
+            'content'=>'required|max:255',
+            'image' =>'required|image',
+        ]);
+        
+        //認証済みユーザの投稿として作成(リクエストされた値をもとに作成)
+        $request->user()->logs()->create([
+            'date' => $request->date,
+            'title' => $request->title,
+            'content' => $request->content,
+            'image' => $request->image,
+        ]);
+        
         $date = $request->date;
         $title = $request->title;
         $content = $request->content;
@@ -109,30 +128,31 @@ class LogsController extends Controller
         //tmpフォルダに移動
         $request->file('image')->move(public_path() . "/img/tmp", $newImageName);
         $image = "/img/tmp/" . $newImageName;
+
         
         return view('logs.confirm',[
             'date' => $date,
             'title' => $title,
             'content' => $content,
+            'image' => $image,
             'newImageName' => $newImageName,
         ]);
     }
-    
+   
     public function complete(Request $request)
     {
-        $log = new Log;
-        $log()->create([
-            'date' => $request->date,
-            'title' => $request->title,
-            'content' => $request->content,
-            'image' => $request->image,
-        ]);
+        $log = new Log();
+        $log ->date = $request->date;
+        $log ->title = $request->title;
+        $log->content = $request->content;
+        $log->image = $request->image;
+        $log->save();
         
         //レコードを挿入したときのIDを取得
         $lastInsertedId = $log->id;
         
         //ディレクトリを作成
-        if(!file_exitst(public_path() . "/img/" . $lastInsertedId)){
+        if(!file_exists(public_path() . "/img/" . $lastInsertedId)){
             mkdir(public_path(). "img/" . $lastInsertedId ,0777);
         }
         

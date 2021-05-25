@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layouts.app')
 
 @section('content')
     <h1 class="text-center mt-2 mb-5">画像アップロード - 確認画面</h1>
@@ -10,18 +10,21 @@
                 <div class="col-sm-8">
                     {{ $date }}
                 </div>
+                <input type="hidden" name="date" value="{{ $date }}">
             </div>
             <div class="form-group row">
-                <p class="col-sm-4 col-form-label">title</p>
+                <p class="col-sm-4 col-form-label">Title</p>
                 <div class="col-sm-8">
                     {{ $title }}
                 </div>
+                <input type="hidden" name="title" value="{{ $title }}">
             </div>
             <div class="form-group row">
                 <p class="col-sm-4 col-form-label">Comment</p>
                 <div class="col-sm-8">
                     {{ $content }}
                 </div>
+                <input type="hidden" name="content" value="{{ $content }}">
             </div>
             <div class="form-group row">
                 <p class="col-sm-4 col-form-label">Photo</p>
